@@ -126,7 +126,7 @@
                 <ul class="navbar-nav text-center">
                     <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Balance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Transfer</a></li>
+                    <li class="nav-item"><a class="nav-link" href="transfer.php">Transfer</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">About us</a></li>
                 </ul>
             </div>
@@ -134,17 +134,37 @@
     </nav>
 
     <?php
+        include "con.php"; 
         session_start();
         $name = $_SESSION['username'];
         $name = ucfirst($name);
         echo '<div class="welcome text-center">Welcome ' . $name . '!</div>';
-    ?>
+?>
+    
 
     <div class="container mt-5 mb-5">
         <div class="card text-center">
             <div class="card-body">
                 <h2 class="card-title">Your Balance:</h2><hr>
-                <p class="balance-amount">$000.00</p>
+                <p class="balance-amount">  <?php
+                include "con.php";
+                $username = $_SESSION['username'];
+                $sql3 = "SELECT balance FROM users WHERE username='$username'";
+                
+                // Execute the query
+                $result = $con->query($sql3);
+                
+                // Check if a balance was found
+                if ($result->num_rows > 0) {
+                    // Fetch the balance
+                    $row = $result->fetch_assoc();
+                    $balance = $row["balance"];
+                    
+                    echo "\$$balance";
+                } else {
+                    echo "Error";
+                }
+            ?></p>
                 <button class="btn btn-primary mb-2 transaction-button">View Transactions</button>
                 <div class="btn-group" role="group">
                     <button class="btn btn-light request-button">Transfer</button>

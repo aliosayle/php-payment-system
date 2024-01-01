@@ -49,7 +49,7 @@
                 $result = mysqli_query($con, $query1);
                 
                 if ($result->num_rows == 0) {
-                    $query = "INSERT INTO users (username, password, dob, gender) VALUES ('$user', '$password', '$dob', '$gender')";
+                    $query = "INSERT INTO users (username, password, dob, gender, balance) VALUES ('$user', '$password', '$dob', '$gender', 0)";
 
                     if(mysqli_query($con, $query)){
                         echo "Records added successfully.";

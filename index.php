@@ -119,7 +119,13 @@
     <header class="bg-primary text-white text-center p-2">
         <h1>PayOne</h1>
     </header>
-    
+    <?php
+                include "con.php"; 
+                session_start();
+                $name = $_SESSION['username'];
+                $_SESSION['username'] = $name;
+                $name = ucfirst($name);
+    ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -134,10 +140,7 @@
     </nav>
 
     <?php
-        include "con.php"; 
-        session_start();
-        $name = $_SESSION['username'];
-        $name = ucfirst($name);
+
         echo '<div class="welcome text-center">Welcome ' . $name . '!</div>';
 ?>
     

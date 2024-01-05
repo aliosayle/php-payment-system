@@ -123,7 +123,6 @@
                 include "con.php"; 
                 session_start();
                 $name = $_SESSION['username'];
-                $_SESSION['username'] = $name;
                 $name = ucfirst($name);
     ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -170,7 +169,7 @@
             ?></p>
                 <button class="btn btn-primary mb-2 transaction-button">View Transactions</button>
                 <div class="btn-group" role="group">
-                    <button class="btn btn-light request-button">Transfer</button>
+                    <a href="transfer.php"><button class="btn btn-light request-button">Transfer</button></a>
                     <button class="btn btn-light request-button">Request</button>
                 </div>
             </div>

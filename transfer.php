@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,7 +121,7 @@
 </head>
 <body>
         <?php include "navbar.php"; ?>
-        
+
         <table>
         <form action="<?php echo $_SERVER["PHP_SELF"]?>" method="post">
             <tr>
@@ -139,13 +140,13 @@
         </form>
     </table>
     <?php
-    session_start();
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+
     if (isset($_POST["submit"])) {
         include "con.php";
         
-
-
-        $sending_user = $_SESSION["username"];
+        $sending_user = $_SESSION['username'];
         $recieving_user = $_POST["uname"];
         $amount = $_POST["amount"];
         
@@ -157,12 +158,17 @@
             $con->close();
         }
 
-        $query = "SELECT balance FROM users WHERE username = '$sending_user'";
-        $result = mysqli_query($con, $query);
+        $query_balance = "SELECT balance FROM users WHERE username = '$sending_user'";
+        $result_balance = mysqli_query($con, $query_balance);
         
-        if ($result) {
-            $row = mysqli_fetch_assoc($result);
+        if ($result_balance) {
+            $row = mysqli_fetch_assoc($result_balance);
             $balance0 = $row["balance"];
+            if ($row) {
+                $balance0 = $row["balance"];
+            } else {
+                echo "No balance found for the username: $sending_user";
+            }
         
         } else {
             echo "Error: " . mysqli_error($con);
@@ -173,12 +179,20 @@
 
             $stmt = $con->prepare("UPDATE users SET balance = balance + ? WHERE username = ?");
             $stmt->bind_param("ds", $amount, $recieving_user);
-
             $stmt2 = $con->prepare("UPDATE users SET balance = balance - ? WHERE username = ?");
             $stmt2->bind_param("ds", $amount, $sending_user);
-            
+            $date = date("Y-m-d H:i:s");
+            $stmt3 = "INSERT INTO transactions (sending_user, recieving_user, amount, date) VALUES ('$sending_user', '$recieving_user', '$amount', '$date');";
             $result = $stmt->execute();
             $result2 = $stmt2->execute();
+            mysqli_query($con, $stmt3);
+            echo '<script>
+            window.onload = function() {
+                setTimeout(function() {
+                    window.location.href = "index.php";
+                }, 500);
+            };
+          </script>';
 
             if ($result && $result2) {
                 echo "\$$amount has been sent succesfully to $recieving_user.";

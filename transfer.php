@@ -120,7 +120,12 @@
     </style>
 </head>
 <body>
-        <?php include "navbar.php"; ?>
+        <?php
+        if (!isset($_SESSION['username'])) {
+            header('Location: login.php');
+            exit();
+        }
+        include "navbar.php"; ?>
 
         <table>
         <form action="<?php echo $_SERVER["PHP_SELF"]?>" method="post">
@@ -130,7 +135,7 @@
             </tr>
             <tr>
                 <td><label for="amount"><b>Amount:</b></label></td>
-                <td><input type="number" placeholder="Enter amount" name="amount" required></td>
+                <td><input type="number" placeholder="Enter amount" name="amount" step='0.01'required></td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;">

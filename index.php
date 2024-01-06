@@ -112,6 +112,23 @@
             .request-button {
                 width: 100%; /* Make buttons full width on small screens */
             }
+
+            .notification-dot {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: none; /* initially hidden */
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            position: relative;
+        }
         
     </style>
 </head>
@@ -124,6 +141,8 @@
                 session_start();
                 $name = $_SESSION['username'];
                 $name = ucfirst($name);
+                $sql_get_requests = "SELECT * FROM payment_requests WHERE payee_id = '$name' AND status = 'pending'";
+                $result_get_requests = $con->query($sql_get_requests);
     ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
@@ -139,8 +158,23 @@
     </nav>
 
     <?php
+        if (!isset($_SESSION['username'])) {
+            header('Location: login.php'); // Redirect to login page if not logged in
+            exit();
+        }
+        $currentHour = date('H');
 
-        echo '<div class="welcome text-center">Welcome ' . $name . '!</div>';
+        // Define the greetings
+        $greeting = '';
+        
+        if ($currentHour >= 5 && $currentHour < 12) {
+            $greeting = 'Good morning';
+        } elseif ($currentHour >= 12 && $currentHour < 18) {
+            $greeting = 'Good afternoon';
+        } else {
+            $greeting = 'Good evening';
+        }
+        echo '<div class="welcome text-center">'. $greeting . " " . $name . '!</div>';
 ?>
     
 
@@ -167,17 +201,26 @@
                     echo "Error";
                 }
             ?></p>
-                <button class="btn btn-primary mb-2 transaction-button">View Transactions</button>
+                <a href="transactions.php"><button class="btn btn-primary mb-2 transaction-button">View Transactions</button></a>
                 <div class="btn-group" role="group">
-                    <a href="transfer.php"><button class="btn btn-light request-button">Transfer</button></a>
-                    <button class="btn btn-light request-button">Request</button>
+                    <div class="actions"><a href="transfer.php"><button class="btn btn-light request-button">Transfer</button></a></div>
+                    <div class="actions"><a href="request.php"><span class="notification-dot"></span><button class="btn btn-light request-button">Request</button></a></div>
                 </div>
             </div>
         </div>
         <div class="welcome-container"></div>
     </div>
 
-    <!-- Bootstrap JS and Popper.js are required for some Bootstrap features -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var notificationDot = document.querySelector('.notification-dot');
+        <?php
+            if ($result_get_requests->num_rows > 0) {
+                echo 'notificationDot.style.display = "block";';
+            }
+        ?>
+    });
+</script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

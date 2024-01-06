@@ -1,5 +1,5 @@
 <header class="bg-primary text-white text-center p-2">
-        <h1 href="index.php">PayOne</h1>
+       <h1 href="index.php">PayOne</h1>
     </header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container">

@@ -190,7 +190,7 @@
                 <a href="transactions.php"><button class="btn btn-primary mb-2 transaction-button">View Transactions</button></a>
                 <div class="btn-group" role="group">
                     <div class="actions"><a href="transfer.php"><button class="btn btn-light request-button">Transfer</button></a></div>
-                    <div class="actions"><a href="request.php"><span class="notification-dot"></span><button class="btn btn-light request-button">Request</button></a></div>
+                    <div class="actions"><a href="myrequests.php"><span class="notification-dot"></span><button class="btn btn-light request-button">Requests</button></a></div>
                 </div>
             </div>
         </div>

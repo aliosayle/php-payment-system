@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- <style>
+    <style>
         
         .welcome-container {
                     display: flex;
@@ -122,7 +122,7 @@
                     .navbar{
                         margin-bottom: 8px;
                     }
-                    table {
+                    /* table {
                         width: 100%;
                         border-collapse: collapse;
                         margin-top: 20px;
@@ -134,9 +134,9 @@
                     }
                     th {
                         background-color: #f2f2f2;
-                    }
+                    } */
                 
-            </style> -->
+            </style>
     <title>Past Transactions</title>
 </head>
 <body>

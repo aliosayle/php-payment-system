@@ -6,7 +6,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav text-center">
                         <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Balance</a></li>
+                        <li class="nav-item"><a class="nav-link" href="transactions.php">Balance</a></li>
                         <li class="nav-item"><a class="nav-link" href="transfer.php">Transfer</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">About us</a></li>
                     </ul>

@@ -185,13 +185,39 @@ $con->close();
             color: #fff;
             cursor: pointer;
         }
+        .request-button {
+                    width: 100%; /* Make buttons full width on small screens */
+                }
+
+                .notification-dot {
+                width: 10px;
+                height: 10px;
+                background-color: red;
+                border-radius: 50%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                display: none; /* initially hidden */
+            }
+            .actions {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 10px;
+                position: relative;
+            }
                 
             </style>
     <title>Money Request Form</title>
 </head>
 <body>
 <?php include "navbar.php"; ?>
-
+<?php
+                include "con.php";
+                $name = $_SESSION['username'];
+                $sql_get_requests = "SELECT * FROM payment_requests WHERE payee_id = '$name' AND status = 'pending'";
+                $result_get_requests = $con->query($sql_get_requests);
+    ?>
+<div class="actions"><a href="myrequests.php"><span class="notification-dot"></span><button class="btn btn-light request-button">Requests</button></a></div>
 
 <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
     <h2>Money Request Form</h2>
@@ -203,6 +229,20 @@ $con->close();
     <input type="number" name="amount" step="0.01" required>
 
     <input type="submit" value="Request Money">
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var notificationDot = document.querySelector('.notification-dot');
+        <?php
+            if ($result_get_requests->num_rows > 0) {
+                echo 'notificationDot.style.display = "block";';
+            }
+        ?>
+    });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>

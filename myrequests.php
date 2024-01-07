@@ -5,9 +5,19 @@ $paying_user = $_SESSION['username'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['accept_request'])) {
-        $receiving_user = $_POST['request_id'];
-        $amount = $_POST['amount'];
-        $query_balance = "SELECT balance FROM users WHERE username = '$paying_user'";
+        $request_id = $_POST['request_id'];
+
+        $sql_row = "SELECT * FROM payment_requests WHERE request_id = '$request_id'";
+        $result_row = $con->query($sql_row);
+
+        $row = $result_row->fetch_assoc();
+
+        // Store values in variables
+        $recieving_user = $row['requester_id'];
+        $sending_user = $row['payee_id'];
+        $amount = $row['amount'];
+
+        $query_balance = "SELECT balance FROM users WHERE username = '$sending_user'";
         $result_balance = mysqli_query($con, $query_balance);
         
         if ($result_balance) {
@@ -35,27 +45,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $result = $stmt->execute();
             $result2 = $stmt2->execute();
             mysqli_query($con, $stmt3);
+            $sql_set = "UPDATE payment_requests SET status = 'approved' WHERE request_id = '$request_id';";
+            mysqli_query($con, $sql_set);
+            echo '<script>
+            window.onload = function() {
+                setTimeout(function() {
+                    window.location.href = "myrequests.php";
+                }, 500);
+            };
+          </script>';
 
             if ($result && $result2) {
                 echo "\$$amount has been sent succesfully to $recieving_user.";
             } else {
                 echo "An error has occured: " . $stmt->error;
             }
-        $sql_accept = "UPDATE payment_requests SET status = 'approved' WHERE request_id = '$request_id'";
-        mysqli_query($con, $sql_accept);
+            
+            $stmt->close();
+            $con->close();
+        }else{
+            echo "Not enough money in balance!";
         }
+
+
     } elseif (isset($_POST['decline_request'])) {
         $request_id = $_POST['request_id'];
-        // Perform logic to handle declined request (update status to 'rejected', notify user, etc.)
-        // Example: $sql = "UPDATE payment_requests SET status = 'rejected' WHERE request_id = '$request_id'";
-    }
-}
+        $sql_set = "UPDATE payment_requests SET status = 'rejected' WHERE request_id = '$request_id';";
+        mysqli_query($con, $sql_set);
+     }
+ }
 
 
 
 
 // Fetch money requests for the logged-in user
-$sql = "SELECT * FROM payment_requests WHERE payee_id = '$requester_id' AND status = 'pending'";
+$sql = "SELECT * FROM payment_requests WHERE payee_id = '$paying_user' AND status = 'pending'";
 $result = $con->query($sql);
 ?>
 
@@ -182,22 +206,42 @@ $result = $con->query($sql);
                         background-color: #f44336;
                         color: #fff;
                     }
+                    .request-button {
+                            width: 100%; /* Make buttons full width on small screens */
+                        }
+
+                        .notification-dot {
+                        width: 10px;
+                        height: 10px;
+                        background-color: red;
+                        border-radius: 50%;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        display: none; /* initially hidden */
+                    }
+                    .actions {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 10px;
+                        position: relative;
+                    }
                     </style>
                 
 </head>
 <body>
 <?php include "navbar.php"; ?>
-
+<div class="actions"><a href="request.php"><span class="notification-dot"></span><button class="btn btn-light request-button">Request Money</button></a></div>
 <h2>Money Requests</h2>
 
 <?php
 if ($result->num_rows > 0) {
     echo '<table>';
-    echo '<tr><th>From</th><th>Amount</th><th>Actions</th></tr>';
+    echo '<tr><th>Request ID</th><th>Amount</th><th>Actions</th></tr>';
     
     while ($row = $result->fetch_assoc()) {
         echo '<tr>';
-        echo '<td>' . $row['requester_id'] . '</td>';
+        echo '<td>' . $row['request_id'] . '</td>';
         echo '<td>' . $row['amount'] . '</td>';
         echo '<td class="actions">';
         echo '<form method="post" action="' . $_SERVER["PHP_SELF"] . '">';
